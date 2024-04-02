@@ -44,13 +44,19 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
     void waitForAngle(double angle);
 
+    void resetIntegralError();
+
  private:
    ctre::phoenix6::hardware::TalonFX m_armMotor1;
    ctre::phoenix6::hardware::TalonFX m_armMotor2;
    double setpoint;
+   double previous_time;
    frc::DutyCycleEncoder s_armAbsoluteEncoder;
 
    double pidOutput;
    double error;
+   double integral_error;
    units::volt_t motorsOutput;
+
+   double transToUnitCircle(double angle);
 };

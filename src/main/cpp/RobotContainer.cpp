@@ -42,7 +42,7 @@ RobotContainer::RobotContainer() {
                 m_driverController.GetRawAxis(OIConstants::kLeftXStick), OIConstants::kDriveDeadband)},
             -units::radians_per_second_t{frc::ApplyDeadband(
                 m_driverController.GetRawAxis(OIConstants::kRightXStick), OIConstants::kDriveDeadband)},
-            true, true);
+            true, true, m_driverController.GetRawButton(OIConstants::kRightStickButton), m_driverController2.GetRawButton(OIConstants::kBButton));
       },
       {&m_drive}));
 
@@ -75,10 +75,6 @@ void RobotContainer::ConfigureButtonBindings() {
     // Set X position to avoid the robot from moving when pressing the left bumper
     frc2::JoystickButton(&m_driverController, OIConstants::kLeftBumper)
         .WhileTrue(new frc2::RunCommand([this] { m_drive.SetX(); }, {&m_drive}));
-    
-    // Reset the gyro when pressing the right stick button
-    frc2::JoystickButton(&m_driverController, OIConstants::kRightStickButton)
-        .OnTrue(new frc2::RunCommand([this] { m_drive.ZeroHeading(); }, {&m_drive}));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
@@ -125,6 +121,6 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
   return new frc2::SequentialCommandGroup(
       std::move(swerveControllerCommand),
       frc2::InstantCommand(
-          [this]() { m_drive.Drive(0_mps, 0_mps, 0_rad_per_s, false, false); },
+          [this]() { m_drive.Drive(0_mps, 0_mps, 0_rad_per_s, false, false, false, false); },
           {}));
 }
