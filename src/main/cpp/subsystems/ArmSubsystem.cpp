@@ -65,33 +65,43 @@ void ArmSubsystem::Periodic() {
     }else{
         
     }
-
-    //frc::SmartDashboard::PutNumber("tv:", tv);
 }
 
 void ArmSubsystem::MoveToAngle(double desiredAngle) {
     this->setpoint = desiredAngle;
 }
 
-void ArmSubsystem::LockAngle(bool intakePosition, bool outakePosition, bool shootingPosition) {
-    if (intakePosition) {
-        this->setpoint = transToUnitCircle(kArmIntakeAngle);
-    } else if (outakePosition) {
-        this->setpoint = transToUnitCircle(kArmOutakeAngle);
-    } else if (shootingPosition) {
-        this->setpoint = transToUnitCircle(kArmShootingAngle);
-    }
+void ArmSubsystem::LockAngle(bool intakePosition, bool outakePosition, bool shootingPosition, bool bButton) {
+    
+    if(bButton){
 
-    if (pidOutput > kMaxOutputArmVoltage) {
-        motorsOutput = (units::volt_t)kMaxOutputArmVoltage;
-    } else if (pidOutput < -kMaxOutputArmVoltage) {
-        motorsOutput = -(units::volt_t)kMaxOutputArmVoltage;
-    } else {
-        motorsOutput = (units::volt_t)pidOutput;
-    }
+            std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
+            double targetOffsetAngle_Vertical = table->GetNumber("ty",0.0) + 23;
+            double tv = table->GetNumber("tv",0.0);
 
-    m_armMotor1.SetVoltage(motorsOutput);
-    m_armMotor2.SetVoltage(-motorsOutput);
+        if(tv == 1){
+
+            double distanceToSpeaker = LimelightConstants::kDistanceM/tan(targetOffsetAngle_Vertical * M_PI/180);
+            //double e = 67 - targetOffsetAngle_Vertical;
+            double e = 10.4 * distanceToSpeaker;
+
+            this->setpoint = transToUnitCircle(e);
+        }
+
+    }else{
+
+        if (intakePosition) {this->setpoint = transToUnitCircle(kArmIntakeAngle);} 
+        else if (outakePosition) {this->setpoint = transToUnitCircle(kArmOutakeAngle);} 
+        else if (shootingPosition) {this->setpoint = transToUnitCircle(kArmShootingAngle);}
+
+        if (pidOutput > kMaxOutputArmVoltage) {motorsOutput = (units::volt_t)kMaxOutputArmVoltage;} 
+        else if (pidOutput < -kMaxOutputArmVoltage) {motorsOutput = -(units::volt_t)kMaxOutputArmVoltage;} 
+        else {motorsOutput = (units::volt_t)pidOutput;}
+
+        m_armMotor1.SetVoltage(motorsOutput);
+        m_armMotor2.SetVoltage(-motorsOutput);
+
+    }
 }
 
 double ArmSubsystem::GetAngle(void) {

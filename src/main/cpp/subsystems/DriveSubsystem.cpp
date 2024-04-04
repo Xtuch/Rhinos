@@ -73,8 +73,8 @@ void DriveSubsystem::Drive(units::meters_per_second_t xSpeed,
 
     double tv = table->GetNumber("tv",0.0);
 
-    frc::SmartDashboard::PutNumber("tv:", tv);
-    frc::SmartDashboard::PutNumber("tx:", targetOffsetAngle_Horizontal);
+    //frc::SmartDashboard::PutNumber("tv:", tv);
+    //frc::SmartDashboard::PutNumber("tx:", targetOffsetAngle_Horizontal);
 
     if(tv){
       auto states = kDriveKinematics.ToSwerveModuleStates(
@@ -99,6 +99,7 @@ void DriveSubsystem::Drive(units::meters_per_second_t xSpeed,
   }
   else{
     previous_time = (double)frc::Timer::GetFPGATimestamp();
+    
     if (yawReset) {
       this->ZeroHeading();
     }

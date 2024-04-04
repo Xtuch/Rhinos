@@ -10,7 +10,7 @@
 #include <units/acceleration.h>
 #include <numbers>
 
-#pragma once;
+#pragma once
 
 namespace DriveConstants {
 // Driving Parameters - Note that these are not the maximum capable speeds of
@@ -192,12 +192,14 @@ constexpr double kDelayBeforeShooting = 1.5;
 } // namespace LauncherConstants
 
 namespace ClimberConstants {
-constexpr int kClimberMotor1CanId = 100;
-constexpr int kClimberMotor2CanId = 200;
-}
+constexpr int kClimberMotor1CanId = 17;
+constexpr int kClimberMotor2CanId = 18;
+constexpr units::ampere_t kClimberMotor1CurrentLimit = 3.8_A;
+constexpr units::ampere_t kClimberMotor2CurrentLimit = 3.8_A;
+} // namespace ClimberConstants
 
 namespace LimelightConstants {
 constexpr double kDistanceM = 1.115;
 constexpr double kAlignmentP = 0.05;
 constexpr double kAlignmentI = 0.04;
-}
+} // namespace LimelightConstants
